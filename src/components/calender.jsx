@@ -60,7 +60,7 @@ const CalendarPage=()=>{
         days.push(
           <div key={day} onClick={() => setSelectedDate(cloneDay)}
             className={`p-2 border h-24 text-sm text-center cursor-pointer 
-              ${!isSameMonth(day, monthStart) ? 'bg-gray-500 text-black' : 'bg-white'}
+              ${!isSameMonth(day, monthStart) ? 'bg-gray-50 border-black text-transparent' : 'bg-white'}
               hover:bg-blue-100`}
           >
             {formattedDate}
@@ -78,8 +78,8 @@ const CalendarPage=()=>{
   };
 
   const appointments={
-    "2025-07-11":[{patient:'majid',time:'10.00 AM'},{patient:malik,time:'12.00 AM'}],
-    
+    "2025-07-11":[{patient:'rifath',time:'10.00 AM'},{patient:'shafith',time:'12.00 AM'}],
+    "2025-07-15":[{patient:'hamid'}]
   };
 return (
     <div className="min-h-screen bg-gray-800 p-6 text-black">
