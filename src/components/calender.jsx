@@ -77,8 +77,10 @@ const CalendarPage=()=>{
     return rows;
   };
 
- 
+  const appointments={
+    "2025-07-11":[{patient:'majid',time:'10.00 AM'},{patient:malik,time:'12.00 AM'}],
     
+  };
 return (
     <div className="min-h-screen bg-gray-800 p-6 text-black">
       {renderHeader()}
