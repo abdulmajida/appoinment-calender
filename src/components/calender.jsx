@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {startOfMonth,endOfWeek,startOfWeek,addDays,format,isSameMonth} from 'date-fns'
+import {startOfMonth,endOfWeek,startOfWeek,addDays,format,isSameMonth, endOfMonth} from 'date-fns'
 
 // const CalendarPage =()=>{
 //     return(
@@ -14,7 +14,7 @@ import {startOfMonth,endOfWeek,startOfWeek,addDays,format,isSameMonth} from 'dat
 //setting usestate.
 const CalendarPage=()=>{
     const [currentMonth, setcurrentMonth] = useState(new Date());
-    const [selectedDate, setselectedDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState(new Date());
 
  // shows current month
 
@@ -40,12 +40,54 @@ const CalendarPage=()=>{
     );
    };
 
+   const renderCells = () => {
+    const monthStart = startOfMonth(currentMonth);// first day of the current month 
+    const monthEnd = endOfMonth(monthStart);// last day of the current month 
+    const startDate = startOfWeek(monthStart);
+    const endDate = endOfWeek(monthEnd);
+
+    const rows = [];
+    let days = [];
+    let day = startDate;
+   
+    while (day <= endDate) {
+      for (let i = 0; i < 7; i++) {
+        const formattedDate = format(day, 'd');
+        const cloneDay = day;
+
+        days.push(
+          <div key={day} onClick={() => setSelectedDate(cloneDay)}
+            className={`p-2 border h-24 text-sm text-center cursor-pointer 
+              ${!isSameMonth(day, monthStart) ? 'bg-gray-500 text-black' : 'bg-white'}
+              hover:bg-blue-100`}
+          >
+            {formattedDate}
+          </div>
+        );
+
+        day = addDays(day, 1);
+      }
+
+      rows.push(<div className="grid grid-cols-7" key={day}>{days}</div>);
+      days = [];
+    }
+
+    return rows;
+  };
+
  
     
 return(
-    <div className="min-h-screen bg-gray-800 p-6 text-white">
+    <div className="min-h-screen bg-gray-800 p-6 text-blacks">
         {renderHeader()}
         {renderDays()}
+        {renderCells()}
+
+        {selectedDate && (
+            <div>
+                <p> selected Date :{format(selectedDate,'ppp')}</p>
+            </div>
+        )}
         </div>
 );
 };
