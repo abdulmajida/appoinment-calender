@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {startOfMonth,endOfWeek,startOfWeek,addDays,format,isSameMonth, endOfMonth} from 'date-fns'
+import useMobile from "../hooks/mobile-use";
 
 // const CalendarPage =()=>{
 //     return(
@@ -15,6 +16,7 @@ import {startOfMonth,endOfWeek,startOfWeek,addDays,format,isSameMonth, endOfMont
 const CalendarPage=()=>{
     const [currentMonth, setcurrentMonth] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const isMobile=useMobile();54
 
  // shows current month
 
@@ -54,7 +56,7 @@ const CalendarPage=()=>{
       for (let i = 0; i < 7; i++) {
         const formattedDate = format(day, 'd');
         const cloneDay = day;
-
+       // render each day cells
         days.push(
           <div key={day} onClick={() => setSelectedDate(cloneDay)}
             className={`p-2 border h-24 text-sm text-center cursor-pointer 
@@ -66,8 +68,8 @@ const CalendarPage=()=>{
         );
 
         day = addDays(day, 1);
-      }
-
+      } 
+      // add to the grid 
       rows.push(<div className="grid grid-cols-7" key={day}>{days}</div>);
       days = [];
     }
@@ -77,19 +79,34 @@ const CalendarPage=()=>{
 
  
     
-return(
-    <div className="min-h-screen bg-gray-800 p-6 text-blacks">
-        {renderHeader()}
-        {renderDays()}
-        {renderCells()}
+return (
+    <div className="min-h-screen bg-gray-800 p-6 text-black">
+      {renderHeader()}
 
-        {selectedDate && (
-            <div>
-                <p> selected Date :{format(selectedDate,'ppp')}</p>
-            </div>
-        )}
-        </div>
-);
+      {isMobile ? (
+        <>
+          <input
+            type="date"
+            value={format(selectedDate, 'yyyy-MM-dd')}
+            onChange={(e) => setSelectedDate(new Date(e.target.value))}
+            className="text-black p-2 mb-4 w-full max-w-xs rounded"
+          />
+
+          <div className="bg-white text-black p-4 rounded shadow">
+            <h3 className="text-lg font-bold mb-2">
+              {format(selectedDate, 'PPP')}
+            </h3>
+            <p>📝 No appointments yet</p>
+          </div>
+        </>
+      ) : (
+        <>
+          {renderDays()}
+          {renderCells()}
+        </>
+      )}
+    </div>
+  );
 };
 
 
