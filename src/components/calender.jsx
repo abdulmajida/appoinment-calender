@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import {startOfMonth,endOfWeek,startOfWeek,addDays,format,isSameMonth, endOfMonth} from 'date-fns'
 import useMobile from "../hooks/mobile-use";
+import AppointmentsModal from "./appointment-modal";
 
 // const CalendarPage =()=>{
 //     return(
@@ -16,7 +17,26 @@ import useMobile from "../hooks/mobile-use";
 const CalendarPage=()=>{
     const [currentMonth, setcurrentMonth] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const isMobile=useMobile();54
+    const isMobile=useMobile();
+    const [appointments, setAppointments] = useState(() => {
+  const stored = localStorage.getItem('appointments');
+  return stored ? JSON.parse(stored) : {};
+  });
+  const [showModal, setShowModal] = useState(false);
+    
+
+ //to save apmts to local storage
+ useEffect(()=>{localStorage.setItem('appointments',JSON.stringify(appointments))},[appointments]);
+
+ const handleSaveAppointment =(newAppt)=>{
+  const dateKey=format(selectedDate,'yyyy-MM-dd');
+
+  setAppointments((prev)=>({
+   ...prev,[dateKey]:[...(prev[dateKey] || []),newAppt], 
+  }));
+
+  setShowModal(false);
+ }
 
  // shows current month
 
@@ -25,7 +45,7 @@ const CalendarPage=()=>{
    <div className="flex justify-between items-center mb-4">
         <button className="text-white bg-black px-3 py-1 rounded"
          onClick={()=>setcurrentMonth(prev=> addDays(prev, -30))}>Prev</button>
-        <h2 className="text-x1 font-bold text-center text-white">
+        <h2 className="text-xl font-bold text-center text-white">
             {format(currentMonth,'MMMM yyyy')}
         </h2>
         <button className="text-white bg-black px-3 py-1 rounded"
@@ -58,15 +78,15 @@ const CalendarPage=()=>{
         const cloneDay = day;
        // render each day cells
         days.push(
-          <div key={day} onClick={() => setSelectedDate(cloneDay)}
-            className={`p-2 border h-24 text-sm text-center cursor-pointer 
+          <div key={day} onClick={() => {setSelectedDate(cloneDay); setShowModal(true);}}
+            className={`p-2 border h-24 text-xs text-left cursor-pointer group
               ${!isSameMonth(day, monthStart) ? 'bg-gray-50 border-black text-transparent' : 'bg-white'}
               hover:bg-blue-100`}
           >
             <div className="font-bold text-right">{formattedDate}</div>      
-             <div className="mt-1 space-y-1">
+             <div className="mt-1 space-y-1 group">
                {(appointments[format(cloneDay, 'yyyy-MM-dd')] || []).map((appt, i) => (
-                <div key={i} className="text-blue-700 truncate">
+                <div key={i} className="text-blue-700 truncate group-hover:whitespace-normal group-hover:overflow-visible">
                🕑 {appt.time} - {appt.patient}
                  </div>
                    ))}
@@ -85,11 +105,11 @@ const CalendarPage=()=>{
 
     return rows;
   };
-  //hard coded the data
-  const appointments={
-    "2025-07-11":[{patient:'rifath',time:'10.00 AM'},{patient:'shafith',time:'12.00 AM'}],
-    "2025-07-15":[{patient:'hamid'}]
-  };
+  //hard coded the datas
+  // const appointments={
+  //   "2025-07-11":[{patient:'rifath',time:'10.00 AM'},{patient:'shafith',time:'12.00 AM'}],
+  //   "2025-07-15":[{patient:'hamid'}]
+  // };
 
 return (
     <div className="min-h-screen bg-gray-800 p-6 text-black">
@@ -108,7 +128,15 @@ return (
             <h3 className="text-lg font-bold mb-2">
               {format(selectedDate, 'PPP')}
             </h3>
-            <p>📝 No appointments yet</p>
+            {(appointments[format(selectedDate, 'yyyy-MM-dd')] || []).length === 0 ? (
+           <p>📝 No appointments yet</p>
+           ) : (
+           <ul className="list-disc pl-4 text-sm">
+           {appointments[format(selectedDate, 'yyyy-MM-dd')].map((appt, index) => (
+           <li key={index}>🕑 {appt.time} - {appt.patient}</li>
+          ))}
+         </ul>
+          )}
           </div>
         </>
       ) : (
@@ -116,6 +144,12 @@ return (
           {renderDays()}
           {renderCells()}
         </>
+      )}
+
+      {showModal && selectedDate && (
+        <AppointmentsModal date={selectedDate} onClose={()=>setShowModal(false)} onSave={handleSaveAppointment}
+          existingAppointments={appointments[format(selectedDate, 'yyyy-MM-dd')] || []}
+/>
       )}
     </div>
   );
