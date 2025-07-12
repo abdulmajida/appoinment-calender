@@ -63,8 +63,17 @@ const CalendarPage=()=>{
               ${!isSameMonth(day, monthStart) ? 'bg-gray-50 border-black text-transparent' : 'bg-white'}
               hover:bg-blue-100`}
           >
-            {formattedDate}
+            <div className="font-bold text-right">{formattedDate}</div>      
+             <div className="mt-1 space-y-1">
+               {(appointments[format(cloneDay, 'yyyy-MM-dd')] || []).map((appt, i) => (
+                <div key={i} className="text-blue-700 truncate">
+               🕑 {appt.time} - {appt.patient}
+                 </div>
+                   ))}
+                     </div>      
           </div>
+
+          
         );
 
         day = addDays(day, 1);
@@ -76,11 +85,12 @@ const CalendarPage=()=>{
 
     return rows;
   };
-
+  //hard coded the data
   const appointments={
     "2025-07-11":[{patient:'rifath',time:'10.00 AM'},{patient:'shafith',time:'12.00 AM'}],
     "2025-07-15":[{patient:'hamid'}]
   };
+
 return (
     <div className="min-h-screen bg-gray-800 p-6 text-black">
       {renderHeader()}
