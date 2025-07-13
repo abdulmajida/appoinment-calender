@@ -157,7 +157,17 @@ return (
            ) : (
            <ul className="list-disc pl-4 text-sm">
            {appointments[format(selectedDate, 'yyyy-MM-dd')].map((appt, index) => (
-           <li key={index}>🕑 {appt.time} - {appt.patient}</li>
+           <li key={index} className="flex justify-between items-center">
+              <span>🕑 {appt.time} - {appt.patient}</span>
+                <button
+                  onClick={() =>
+                     handleDeleteAppointment(format(selectedDate, "yyyy-MM-dd"), index)
+                     }
+                          className="text-red-500 hover:text-red-700 text-xs ml-2"
+                    >
+                    ❌
+                </button>
+                  </li>
           ))}
          </ul>
           )}
