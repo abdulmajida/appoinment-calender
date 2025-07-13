@@ -2,6 +2,7 @@ import { useState ,useEffect} from "react";
 import {startOfMonth,endOfWeek,startOfWeek,addDays,format,isSameMonth, endOfMonth} from 'date-fns'
 import useMobile from "../hooks/mobile-use";
 import AppointmentsModal from "./appointment-modal";
+import { toast } from 'react-toastify';
 
 // const CalendarPage =()=>{
 //     return(
@@ -36,7 +37,9 @@ const CalendarPage=()=>{
   }));
 
   setShowModal(false);
- }
+
+   toast.success("✅ Appointment added successfully!");
+  }
 
  // shows current month
 
