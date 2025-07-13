@@ -14,7 +14,7 @@ const AppointmentsModal = ({ date, onClose, onSave, existingAppointments = [] })
         const newAppointment={patient,doctor,time};
         onSave(newAppointment);
     };
-    return(<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    return(<div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
         <form className="bg-white text-black p-6 rounded-lg shadow-md w-full max-w-sm space-y-4"
               onSubmit={handleSubmit}>
             <h2 className="text-xl font-bold text-center">

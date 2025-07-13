@@ -87,7 +87,16 @@ const CalendarPage=()=>{
              <div className="mt-1 space-y-1 group">
                {(appointments[format(cloneDay, 'yyyy-MM-dd')] || []).map((appt, i) => (
                 <div key={i} className="text-blue-700 truncate group-hover:whitespace-normal group-hover:overflow-visible">
+               <span title={`${appt.time}-${appt.patient}`}>
                🕑 {appt.time} - {appt.patient}
+               </span>
+                <button onClick={(e)=>{
+                  e.stopPropagation();
+                  handleDeleteAppointment(format(cloneDay,'yyyy-MM-dd'),i);
+                }}
+                className="text-red-500 hover:text-red-700 text-xs ml-2 ">
+                  ❌
+                </button>
                  </div>
                    ))}
                      </div>      
@@ -110,6 +119,21 @@ const CalendarPage=()=>{
   //   "2025-07-11":[{patient:'rifath',time:'10.00 AM'},{patient:'shafith',time:'12.00 AM'}],
   //   "2025-07-15":[{patient:'hamid'}]
   // };
+
+  const handleDeleteAppointment = (dateKey, indexToDelete) => {
+  setAppointments((prev) => {
+    const updated = { ...prev };
+    updated[dateKey] = prev[dateKey].filter((_, i) => i !== indexToDelete);
+
+    // If no appointments left for the day, remove the key
+    if (updated[dateKey].length === 0) {
+      delete updated[dateKey];
+    }
+
+    return updated;
+  });
+};
+
 
 return (
     <div className="min-h-screen bg-gray-800 p-6 text-black">
